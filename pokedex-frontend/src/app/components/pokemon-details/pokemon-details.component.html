@@ -1,0 +1,130 @@
+<div class="pokemon-details">
+
+  <div *ngIf="loading" class="loading-container">
+    <div class="pokeball-spinner"></div>
+    <p>Loading Pokémon details...</p>
+  </div>
+
+  <div *ngIf="error && !loading" class="error-container">
+    <h3>❌ Error Loading Pokémon</h3>
+    <p>{{ error }}</p>
+    <button (click)="goBack()" class="back-button">Back to Pokédex</button>
+  </div>
+
+  <div *ngIf="pokemon && !loading" class="pokemon-details-content">
+    <!-- Header Section -->
+    <div class="pokemon-header" [style.background]="getTypeColor(getPrimaryType())">
+      <div class="pokemon-basic-info">
+        <div class="pokemon-name-id">
+          <h1 class="pokemon-name">{{ pokemon.name | titlecase }}</h1>
+          <span class="pokemon-id">#{{ getPokemonId() }}</span>
+        </div>
+
+        <div class="pokemon-types">
+          <span *ngFor="let type of pokemon.types" class="type-badge" [style.background]="getTypeColor(type.type.name)">
+            {{ type.type.name | titlecase }}
+          </span>
+        </div>
+      </div>
+
+      <div class="pokemon-image-section">
+        <img [src]="pokemon.sprites.front_default || 'assets/images/pokeball.png'" [alt]="pokemon.name"
+          class="pokemon-image" />
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs-navigation">
+      <button (click)="setActiveTab('stats')" [class.active]="activeTab === 'stats'" class="tab-button">
+        📊 Stats
+      </button>
+      <button (click)="setActiveTab('abilities')" [class.active]="activeTab === 'abilities'" class="tab-button">
+        💫 Abilities
+      </button>
+      <button (click)="setActiveTab('moves')" [class.active]="activeTab === 'moves'" class="tab-button">
+        🎯 Moves
+      </button>
+      <button (click)="setActiveTab('info')" [class.active]="activeTab === 'info'" class="tab-button">
+        ℹ️ Info
+      </button>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- Stats Tab -->
+      <div *ngIf="activeTab === 'stats'" class="stats-tab">
+        <div class="stats-grid">
+          <div *ngFor="let stat of pokemon.stats" class="stat-item">
+            <div class="stat-header">
+              <span class="stat-name">{{ getStatName(stat.stat.name) }}</span>
+              <span class="stat-value">{{ stat.base_stat }}</span>
+            </div>
+            <div class="stat-bar">
+              <div class="stat-bar-fill" [style.width.%]="(stat.base_stat / 255) * 100"
+                [style.background]="getTypeColor(getPrimaryType())"></div>
+            </div>
+          </div>
+          <div class="stat-item total-stat">
+            <div class="stat-header">
+              <span class="stat-name">Total</span>
+              <span class="stat-value">{{ getTotalStats() }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Abilities Tab -->
+      <div *ngIf="activeTab === 'abilities'" class="abilities-tab">
+        <div class="abilities-grid">
+          <div *ngFor="let ability of pokemon.abilities" class="ability-card"
+            [class.hidden-ability]="ability.is_hidden">
+            <h4>{{ ability.ability.name | titlecase }}</h4>
+            <span class="ability-type" *ngIf="ability.is_hidden">
+              Hidden Ability
+            </span>
+            <span class="ability-type" *ngIf="!ability.is_hidden">
+              Slot {{ ability.slot }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Moves Tab -->
+      <div *ngIf="activeTab === 'moves'" class="moves-tab">
+        <div class="moves-grid">
+          <div *ngFor="let move of pokemon.moves.slice(0, 20)" class="move-card">
+            {{ move.move.name | titlecase }}
+          </div>
+        </div>
+        <div *ngIf="pokemon.moves.length > 20" class="moves-info">
+          + {{ pokemon.moves.length - 20 }} more moves
+        </div>
+      </div>
+
+      <!-- Info Tab -->
+      <div *ngIf="activeTab === 'info'" class="info-tab">
+        <div class="info-grid">
+          <div class="info-item">
+            <strong>Height:</strong> {{ formatHeight() }}
+          </div>
+          <div class="info-item">
+            <strong>Weight:</strong> {{ formatWeight() }}
+          </div>
+          <div class="info-item">
+            <strong>Base Experience:</strong> {{ pokemon.base_experience || 'Unknown' }}
+          </div>
+          <div class="info-item">
+            <strong>Types:</strong>
+            <span *ngFor="let type of pokemon.types; let last = last">
+              {{ type.type.name | titlecase }}{{ !last ? ', ' : '' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pokemon-actions">
+      <button (click)="goBack()" class="back-button">← Back to Pokédex</button>
+    </div>
+  </div>
+</div>

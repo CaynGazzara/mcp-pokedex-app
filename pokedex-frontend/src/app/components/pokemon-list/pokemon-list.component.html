@@ -1,0 +1,103 @@
+<div class="pokemon-list">
+  <!-- Search Bar -->
+  <app-search-bar (search)="onSearch($event)" (clear)="onClearSearch()"></app-search-bar>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="pokeball-spinner"></div>
+    <p>Loading Pokémon...</p>
+  </div>
+
+  <!-- Results Info -->
+  <div *ngIf="!loading && pokemons.length > 0" class="results-info">
+    <div class="results-count">
+      <span *ngIf="hasSearched; else defaultTitle">
+        🔍 Search Results for "{{ currentQuery }}"
+      </span>
+      <ng-template #defaultTitle>
+        <span>🎮 Pokémon List</span>
+      </ng-template>
+      <span class="count-badge">{{ pokemons.length }} Pokémon</span>
+    </div>
+    <div *ngIf="!hasSearched" class="pagination-info">
+      Page {{ currentPage }} of {{ getTotalPages() }}
+    </div>
+  </div>
+
+  <!-- Pokémon Grid -->
+  <div class="pokemon-grid" *ngIf="pokemons.length > 0 && !loading; else noResults">
+    <div *ngFor="let pokemon of pokemons" class="pokemon-card" (click)="viewPokemonDetails(pokemon.id)"
+      [style.background]="getTypeColor(getPrimaryType(pokemon))">
+      <div class="pokemon-header">
+        <span class="pokemon-id">#{{ getPokemonId(pokemon) }}</span>
+        <div class="pokemon-types">
+          <span *ngFor="let type of pokemon.types" class="type-badge" [style.background]="getTypeColor(type.type.name)">
+            {{ type.type.name }}
+          </span>
+        </div>
+      </div>
+
+      <div class="pokemon-image">
+        <img [src]="pokemon.sprites.front_default || 'assets/images/pokeball.png'" [alt]="pokemon.name"
+          class="pokemon-sprite" />
+      </div>
+
+      <div class="pokemon-info">
+        <h3 class="pokemon-name">{{ pokemon.name | titlecase }}</h3>
+        <div class="pokemon-stats">
+          <div class="stat">
+            <span class="stat-label">HT</span>
+            <span class="stat-value">{{ pokemon.height / 10 }}m</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">WT</span>
+            <span class="stat-value">{{ pokemon.weight / 10 }}kg</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="!hasSearched && pokemons.length > 0 && !loading" class="pagination">
+    <button (click)="previousPage()" [disabled]="currentPage === 1" class="pagination-button">
+      ‹ Previous
+    </button>
+
+    <span class="pagination-text">
+      Page {{ currentPage }} of {{ getTotalPages() }}
+    </span>
+
+    <button (click)="nextPage()" [disabled]="!searchResult?.next" class="pagination-button">
+      Next ›
+    </button>
+  </div>
+
+  <!-- Empty States -->
+  <ng-template #noResults>
+    <div class="empty-state" *ngIf="!loading">
+      <div *ngIf="hasSearched; else initialState">
+        <h3>🔍 No Pokémon found</h3>
+        <p>Try adjusting your search terms.</p>
+        <button (click)="onClearSearch()" class="browse-button">
+          View All Pokémon
+        </button>
+      </div>
+      <ng-template #initialState>
+        <div class="welcome-message">
+          <h3>Welcome to Pokedex MCP! 🎮</h3>
+          <p>Discover and explore all Pokémon with our MCP Server</p>
+          <div class="feature-tips">
+            <h4>Features:</h4>
+            <ul>
+              <li>🔍 Search for any Pokémon</li>
+              <li>📖 View detailed Pokémon information</li>
+              <li>🎨 Color-coded by type</li>
+              <li>📊 See stats and abilities</li>
+            </ul>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </ng-template>
+</div>

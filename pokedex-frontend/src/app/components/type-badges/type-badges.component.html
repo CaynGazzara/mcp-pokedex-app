@@ -1,0 +1,12 @@
+<div class="type-badges">
+  <span 
+    *ngFor="let type of types" 
+    class="type-badge"
+    [class.small]="size === 'small'"
+    [class.medium]="size === 'medium'"
+    [class.large]="size === 'large'"
+    [style.background]="getTypeColor(type)"
+  >
+    {{ type | titlecase }}
+  </span>
+</div>

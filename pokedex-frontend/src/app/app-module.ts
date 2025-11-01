@@ -1,30 +1,31 @@
-import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
-import { AppRoutingModule } from './app-routing-module';
-import { App } from './app';
-import { PokemonList } from './components/pokemon-list/pokemon-list';
-import { PokemonDetails } from './components/pokemon-details/pokemon-details';
-import { SearchBar } from './components/search-bar/search-bar';
-import { LoadingSpinner } from './components/loading-spinner/loading-spinner';
-import { TypeBadges } from './components/type-badges/type-badges';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { AppRoutingModule } from './/app-routing-module';
+import { AppComponent } from './app.component';
+import { PokemonListComponent } from './components/pokemon-list/pokemon-list.component';
+import { PokemonDetailsComponent } from './components/pokemon-details/pokemon-details.component';
+import { SearchBarComponent } from './components/search-bar/search-bar.component';
+import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
+import { TypeBadgesComponent } from './components/type-badges/type-badges.component';
 
 @NgModule({
   declarations: [
-    App,
-    PokemonList,
-    PokemonDetails,
-    SearchBar,
-    LoadingSpinner,
-    TypeBadges
+    AppComponent,
+    PokemonListComponent,
+    PokemonDetailsComponent,
+    SearchBarComponent,
+    LoadingSpinnerComponent,
+    TypeBadgesComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule,
+    FormsModule
   ],
-  providers: [
-    provideBrowserGlobalErrorListeners()
-  ],
-  bootstrap: [App]
+  providers: [],
+  bootstrap: [AppComponent]
 })
 export class AppModule { }
